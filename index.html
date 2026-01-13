@@ -1,56 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
+    <meta charset="UTF-8">
     <title>My Online Shop</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #222;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #333;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: yellow;
+        }
+
+        .container {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .products {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .product {
+            background-color: white;
+            padding: 20px;
+            width: 220px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .product h3 {
+            margin-top: 0;
+        }
+
+        .buy-btn {
+            background-color: green;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .buy-btn:hover {
+            background-color: darkgreen;
+        }
+
+        footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
+<header>
     <h1>Welcome to My Business</h1>
     <p>এটি আমার অনলাইন দোকান</p>
-    <nav>
-    <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Products</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
-    </ul>
+</header>
+
+<nav>
+    <a href="#">Home</a>
+    <a href="#">Products</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
 </nav>
 
-<h1>Welcome to My Business</h1>
-<p>এটি আমার অনলাইন দোকান</p>
-<section class="products">
+<div class="container">
     <h2>Our Products</h2>
 
-    <div class="product">
-        <h3>Product 1</h3>
-        <p>Price: 500৳</p>
-       <button onclick="buyNow('Product 1')">Buy Now</button>
+    <div class="products">
+        <div class="product">
+            <h3>Product 1</h3>
+            <p>Price: 500৳</p>
+            <button class="buy-btn" onclick="orderNow('Product 1', 500)">Buy Now</button>
 
+        </div>
+
+        <div class="product">
+            <h3>Product 2</h3>
+            <p>Price: 800৳</p>
+            <button class="buy-btn" onclick="orderNow('Product 2', 800)">Buy Now</button>
+
+        </div>
     </div>
+</div>
 
-    <div class="product">
-        <h3>Product 2</h3>
-        <p>Price: 800৳</p>
-        <button onclick="buyNow('Product 2')">Buy Now</button>
-
-    </div>
-</section>
-<section class="contact">
-    <h2>Contact Us</h2>
-    <p><strong>Business Name:</strong> My Online Shop</p>
-    <p><strong>Phone:</strong> 01975805326</p>
-    <p><strong>Email:</strong> mdmilonislamashik@gmail.com</p>
-    <p><strong>Address:</strong> Dhaka, Bangladesh</p>
-</section>
 <footer>
-    <p>© 2026 My Online Shop | All Rights Reserved</p>
-    <p>Facebook: facebook.com/myonlineshop</p>
+    <h3>Contact Us</h3>
+    <p>Business Name: My Online Shop</p>
+    <p>Phone: 01975805326</p>
+    <p>Email: mdmilonislamashik@gmail.com</p>
+    <p>Address: Dhaka, Bangladesh</p>
 </footer>
 <script src="script.js"></script>
-<button onclick="buyNow()">Buy Now</button>
-
 
 </body>
 </html>
