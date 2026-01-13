@@ -1,6 +1,13 @@
-function buyNow(productName) {
-    var phoneNumber = "8801975805326";
-    var message = "আমি " + productName + " অর্ডার করতে চাই";
-    var url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
-    window.open(url, "_blank");
+function orderNow(productName, price) {
+    let phoneNumber = "8801975805326"; // আপনার WhatsApp নাম্বার (88 সহ)
+
+    let message = 
+        "Hello, আমি একটি অর্ডার করতে চাই.%0A%0A" +
+        "Product: " + productName + "%0A" +
+        "Price: " + price + "৳";
+
+    let whatsappURL = 
+        "https://wa.me/" + phoneNumber + "?text=" + message;
+
+    window.open(whatsappURL, "_blank");
 }
