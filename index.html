@@ -1,130 +1,153 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <title>My Online Shop</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-        }
+<meta charset="UTF-8">
+<title>Advanced Shop</title>
+<script src="https://cdn.tailwindcss.com"></script>
 
-        header {
-            background-color: #222;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        nav {
-            background-color: #333;
-            text-align: center;
-            padding: 10px 0;
-        }
-
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav a:hover {
-            color: yellow;
-        }
-
-        .container {
-            padding: 30px;
-            text-align: center;
-        }
-
-        .products {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .product {
-            background-color: white;
-            padding: 20px;
-            width: 220px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .product h3 {
-            margin-top: 0;
-        }
-
-        .buy-btn {
-            background-color: green;
-            color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .buy-btn:hover {
-            background-color: darkgreen;
-        }
-
-        footer {
-            background-color: #222;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-        }
-    </style>
-    <link rel="stylesheet" href="style.css">
-
+<!-- Firebase Compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
+<body class="bg-gray-100 p-4 transition-all">
 
-<body>
+<button onclick="toggleDark()" class="fixed top-4 right-4 bg-black text-white px-3 py-1 rounded">Dark</button>
 
-<header>
-    <h1>Welcome to My Business</h1>
-    <p>এটি আমার অনলাইন দোকান</p>
-</header>
+<h1 class="text-2xl font-bold text-center mb-4">আমার অনলাইন শপ</h1>
 
-<nav>
-    <a href="#">Home</a>
-    <a href="#">Products</a>
-    <a href="#">About</a>
-    <a href="#">Contact</a>
-</nav>
+<div id="products" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
 
-<div class="container">
-    <h2>Our Products</h2>
-
-    <div class="products">
-        <div class="product">
-            <h3>Product 1</h3>
-            <p>Price: 500৳</p>
-            <button class="buy-btn" onclick="orderNow('Product 1', 500)">Buy Now</button>
-
-        </div>
-
-        <div class="product">
-            <h3>Product 2</h3>
-            <p>Price: 800৳</p>
-            <button class="buy-btn" onclick="orderNow('Product 2', 800)">Buy Now</button>
-
-        </div>
-    </div>
+<div class="mt-6 bg-white p-4 rounded shadow">
+<h2 class="text-xl font-semibold mb-2">কার্ট</h2>
+<div id="cartItems"></div>
+<input id="couponInput" placeholder="Coupon Code" class="border p-2 w-full mt-2">
+<button onclick="applyCoupon()" class="bg-blue-600 text-white px-4 py-2 mt-2 w-full">কুপন প্রয়োগ</button>
+<p class="mt-2">মোট বিল: <span id="totalPrice">0</span> টাকা</p>
 </div>
 
-<footer>
-    <h3>Contact Us</h3>
-    <p>Business Name: My Online Shop</p>
-    <p>Phone: 01975805326</p>
-    <p>Email: mdmilonislamashik@gmail.com</p>
-    <p>Address: Dhaka, Bangladesh</p>
-</footer>
-<script src="script.js"></script>
+<div class="mt-6 bg-white p-4 rounded shadow">
+<h2 class="text-xl font-semibold mb-2">অর্ডার তথ্য</h2>
+<input id="name" placeholder="আপনার নাম" class="border p-2 w-full mb-2">
+<input id="phone" placeholder="ফোন নাম্বার" class="border p-2 w-full mb-2">
+<select id="paymentMethod" class="border p-2 w-full mb-2">
+<option value="">পেমেন্ট মেথড</option>
+<option>Bkash</option>
+<option>Nagad</option>
+<option>Rocket</option>
+<option>Upay</option>
+</select>
+<input id="trxid" placeholder="TrxID / Reference" class="border p-2 w-full mb-2">
+<button onclick="placeOrder()" class="bg-green-600 text-white px-4 py-2 w-full">অর্ডার কনফার্ম</button>
+</div>
 
+<div id="loginBox" class="mt-6 bg-white p-4 rounded shadow">
+<input id="adminPass" type="password" placeholder="Admin Password" class="border p-2 w-full mb-2">
+<button onclick="loginAdmin()" class="bg-red-600 text-white px-4 py-2 w-full">Admin Login</button>
+</div>
+
+<div id="adminPanel" class="hidden mt-6 bg-white p-4 rounded shadow">
+<h2 class="text-xl font-semibold mb-2">Admin Panel</h2>
+<input id="adminWhatsapp" placeholder="WhatsApp (8801...)" class="border p-2 w-full mb-2">
+<input id="couponCode" placeholder="Coupon Code" class="border p-2 w-full mb-2">
+<input id="couponDiscount" type="number" placeholder="Discount %" class="border p-2 w-full mb-2">
+<button onclick="saveAdmin()" class="bg-black text-white px-4 py-2 w-full">সেভ</button>
+</div>
+
+<div id="successPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+<div class="bg-white p-6 rounded text-center">
+<h2 class="text-xl font-bold mb-2">অর্ডার সফল</h2>
+<p>আপনার অর্ডার গ্রহণ করা হয়েছে</p>
+<button onclick="closePopup()" class="bg-green-600 text-white px-4 py-2 mt-3">ঠিক আছে</button>
+</div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxIsz5bZJc8tK_K0waK0Ztmu8N_d88vDJp5fvgrX_bBkCbasAdjBPmhXg7dt2KRSel_YA/exec";
+const ADMIN_PASSWORD = "1234";
+
+// Firebase config
+const firebaseConfig = {
+apiKey: "AIzaSyAvAtKT_1p9n2u7fZogXjhq-gatKv79Vmw",
+authDomain: "ulm-shop.firebaseapp.com",
+projectId: "ulm-shop",
+storageBucket: "ulm-shop.firebasestorage.app",
+messagingSenderId: "582860639655",
+appId: "1:582860639655:web:dd4de2e143c762ba7f3a82",
+measurementId: "G-CR4GP7CGGD"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* ================= DATA ================= */
+const products = [
+{id:1,name:"Product A",price:500,img:"https://via.placeholder.com/300"},
+{id:2,name:"Product B",price:750,img:"https://via.placeholder.com/300"},
+{id:3,name:"Product C",price:300,img:"https://via.placeholder.com/300"}
+];
+
+let cart=[]; let discount=0;
+let admin={whatsapp:"",coupon:"",discountPercent:0};
+
+/* ================= DOM ================= */
+const productsDiv=document.getElementById("products");
+const cartItems=document.getElementById("cartItems");
+const totalPrice=document.getElementById("totalPrice");
+const couponInput=document.getElementById("couponInput");
+const adminPass=document.getElementById("adminPass");
+const loginBox=document.getElementById("loginBox");
+const adminPanel=document.getElementById("adminPanel");
+const adminWhatsapp=document.getElementById("adminWhatsapp");
+const couponCode=document.getElementById("couponCode");
+const couponDiscount=document.getElementById("couponDiscount");
+const successPopup=document.getElementById("successPopup");
+
+/* ================= FUNCTIONS ================= */
+function toggleDark(){document.body.classList.toggle("bg-gray-900"); document.body.classList.toggle("text-white");}
+
+function renderProducts(){
+productsDiv.innerHTML="";
+products.forEach(p=>{
+productsDiv.innerHTML+=`<div class="bg-white p-4 rounded shadow">
+<img src="${p.img}" class="h-40 w-full object-cover rounded mb-2">
+<h3 class="font-semibold">${p.name}</h3>
+<p>${p.price} টাকা</p>
+<button onclick="addToCart(${p.id})" class="bg-blue-500 text-white px-3 py-1 mt-2">Add</button>
+</div>`;
+});
+}
+
+function addToCart(id){cart.push(products.find(p=>p.id===id)); renderCart();}
+function renderCart(){cartItems.innerHTML=""; let total=0; cart.forEach(p=>{total+=p.price; cartItems.innerHTML+=`<p>${p.name} - ${p.price}</p>`}); if(discount>0) total-=discount; totalPrice.innerText=total;}
+function applyCoupon(){if(couponInput.value===admin.coupon){discount=Math.round(cart.reduce((s,p)=>s+p.price,0)*admin.discountPercent/100); renderCart(); alert("Coupon Applied");}else alert("ভুল কুপন");}
+function saveAdmin(){admin.whatsapp=adminWhatsapp.value; admin.coupon=couponCode.value; admin.discountPercent=Number(couponDiscount.value); alert("Admin সেটিং সেভ হয়েছে");}
+function loginAdmin(){if(adminPass.value===ADMIN_PASSWORD){loginBox.classList.add("hidden"); adminPanel.classList.remove("hidden");}else alert("ভুল পাসওয়ার্ড");}
+
+function placeOrder(){
+if(cart.length===0) return alert("কার্ট খালি");
+const order={name:document.getElementById("name").value, phone:document.getElementById("phone").value,
+products:cart.map(p=>p.name).join(", "), payment:document.getElementById("paymentMethod").value,
+trxid:document.getElementById("trxid").value, total:totalPrice.innerText};
+
+// Google Sheet
+fetch(SHEET_URL,{method:"POST", body:JSON.stringify(order)});
+
+// Firebase Firestore
+db.collection("orders").add({...order, time:firebase.firestore.FieldValue.serverTimestamp()});
+
+// WhatsApp
+if(admin.whatsapp) window.open(`https://wa.me/${admin.whatsapp}?text=` + encodeURIComponent(
+`নতুন অর্ডার\nনাম:${order.name}\nফোন:${order.phone}\nপণ্য:${order.products}\nমোট:${order.total}`
+));
+
+showPopup(); cart=[]; discount=0; renderCart();
+}
+
+function showPopup(){successPopup.classList.remove("hidden");}
+function closePopup(){successPopup.classList.add("hidden");}
+
+renderProducts();
+</script>
 </body>
 </html>
